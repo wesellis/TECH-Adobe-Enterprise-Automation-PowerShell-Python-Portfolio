@@ -1,0 +1,35 @@
+# PowerShell Automation Container
+FROM mcr.microsoft.com/powershell:7.3-ubuntu-22.04
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PowerShell modules
+RUN pwsh -Command "Install-Module -Name Az -Force -AllowClobber -Scope AllUsers" && \
+    pwsh -Command "Install-Module -Name Pester -Force -Scope AllUsers" && \
+    pwsh -Command "Install-Module -Name PSScriptAnalyzer -Force -Scope AllUsers"
+
+# Create app directory
+WORKDIR /app
+
+# Copy PowerShell scripts
+COPY creative-cloud/ ./scripts/
+COPY config/ ./config/
+COPY tests/*.ps1 ./tests/
+
+# Set up logging directory
+RUN mkdir -p /app/logs
+
+# Create entrypoint script
+RUN echo '#!/bin/bash\n\
+while true; do\n\
+    pwsh -File /app/scripts/scheduler/Run-ScheduledTasks.ps1\n\
+    sleep 300\n\
+done' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+# Run PowerShell automation
+CMD ["/entrypoint.sh"]

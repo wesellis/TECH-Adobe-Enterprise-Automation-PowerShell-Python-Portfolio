@@ -1,0 +1,29 @@
+# Python Automation Container
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY python-automation/ ./
+COPY config/ ./config/
+
+# Create logs directory
+RUN mkdir -p /app/logs
+
+# Run Python automation
+CMD ["python", "-u", "main.py"]
