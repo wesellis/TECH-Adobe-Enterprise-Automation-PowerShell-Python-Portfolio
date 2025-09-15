@@ -103,7 +103,7 @@ cp .env.example .env
 # Edit .env with your Adobe API credentials
 
 # Launch everything
-docker-compose up -d
+cd infrastructure && docker-compose up -d
 
 # Access services
 open http://localhost:8000          # API Server
@@ -115,7 +115,7 @@ open http://localhost:9090          # Prometheus Metrics
 ### ☸️ **Kubernetes Deployment**
 ```bash
 # Deploy to Kubernetes cluster
-kubectl apply -f kubernetes/deployment.yaml
+kubectl apply -f infrastructure/kubernetes/deployment.yaml
 
 # Check deployment status
 kubectl get pods -n adobe-automation
@@ -234,24 +234,26 @@ graph TB
 ### 📁 **Project Structure**
 ```
 adobe-enterprise-automation/
-├── 📁 .github/workflows/        # CI/CD pipelines
 ├── 📁 api/                      # Express.js REST API
-├── 📁 creative-cloud/           # PowerShell automation scripts
-├── 📁 dashboard/                # React web dashboard
-├── 📁 database/                 # SQL schemas & migrations
-├── 📁 documentation/            # Comprehensive docs
-├── 📁 grafana/                  # Monitoring dashboards
-├── 📁 kubernetes/               # K8s manifests
-├── 📁 modules/                  # PowerShell modules
-│   └── AdobeAutomation/        # Main automation module
+├── 📁 creative-cloud/           # Core PowerShell automation
 ├── 📁 python-automation/        # Python async services
-├── 📁 scripts/                  # Utility scripts
-├── 📁 terraform/                # Infrastructure as Code
+├── 📁 scripts/                  # Utility automation scripts
+├── 📁 modules/                  # PowerShell modules
 ├── 📁 tests/                    # Test suites
-├── 📄 docker-compose.yml        # Full stack orchestration
-├── 📄 Makefile                  # Build automation
-├── 📄 package.json              # Node.js dependencies
-└── 📄 requirements.txt          # Python dependencies
+├── 📁 examples/                 # Learning path (basic → advanced)
+│   ├── 01-basic/               # Entry-level scripts
+│   ├── 02-intermediate/        # Professional scripts
+│   └── 03-advanced/            # Enterprise solutions
+├── 📁 infrastructure/           # Deployment & infrastructure
+│   ├── kubernetes/             # K8s manifests
+│   ├── terraform/              # Infrastructure as Code
+│   ├── docker-compose.yml      # Stack orchestration
+│   └── dashboard/              # Web UI
+├── 📁 docs/                     # Complete documentation
+├── 📁 config/                   # Configuration files
+├── 📁 logs/                     # Application logs
+├── 📁 reports/                  # Generated reports
+└── 📄 README.md                 # This file
 ```
 
 ## 📊 **Proven Impact**
@@ -285,19 +287,20 @@ Annual Savings Breakdown:
 ## 📚 **Documentation**
 
 ### 🏛️ Architecture & Design
-- 📐 [**Architecture Overview**](documentation/ARCHITECTURE.md) - System design, components, data flow
-- 🚀 [**Deployment Guide**](documentation/DEPLOYMENT_GUIDE.md) - Step-by-step production deployment
-- 📊 [**Performance Metrics**](documentation/PERFORMANCE_METRICS.md) - Benchmarks and optimization
+- 📐 [**Architecture Overview**](docs/ARCHITECTURE.md) - System design, components, data flow
+- 🚀 [**Deployment Guide**](docs/DEPLOYMENT_GUIDE.md) - Step-by-step production deployment
+- 📊 [**Performance Metrics**](docs/PERFORMANCE_METRICS.md) - Benchmarks and optimization
+- 🎓 [**Learning Path**](docs/LEARNING_PATH.md) - Progress from basic to advanced
 
 ### 🔧 Technical Documentation
-- 🌐 [**API Reference**](documentation/API_REFERENCE.md) - REST API endpoints and examples
-- 🛡️ [**Security Guidelines**](documentation/SECURITY.md) - Security best practices and compliance
-- 📡 [**Monitoring Setup**](documentation/MONITORING_SETUP.md) - Prometheus, Grafana, ELK configuration
+- 🌐 [**API Reference**](docs/API_REFERENCE.md) - REST API endpoints and examples
+- 🛡️ [**Security Guidelines**](docs/SECURITY.md) - Security best practices and compliance
+- 📡 [**Monitoring Setup**](docs/MONITORING_SETUP.md) - Prometheus, Grafana, ELK configuration
 
 ### 📖 Operations & Support
-- 🔍 [**Troubleshooting Guide**](documentation/TROUBLESHOOTING.md) - Common issues and solutions
-- 📝 [**Changelog**](documentation/CHANGELOG.md) - Version history and release notes
-- 🤝 [**Contributing Guidelines**](CONTRIBUTING.md) - How to contribute to the project
+- 🔍 [**Troubleshooting Guide**](docs/TROUBLESHOOTING.md) - Common issues and solutions
+- 📝 [**Changelog**](docs/CHANGELOG.md) - Version history and release notes
+- 🤝 [**Contributing Guidelines**](docs/CONTRIBUTING.md) - How to contribute to the project
 
 ## 🛠️ **Technology Stack**
 
