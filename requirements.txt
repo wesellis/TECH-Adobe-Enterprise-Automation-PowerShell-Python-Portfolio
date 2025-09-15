@@ -43,7 +43,7 @@ pytest-cov==4.1.0
 # Utilities
 python-dateutil==2.8.2
 colorama==0.4.6
-tqdm==4.66.1
+tqdm==4.66.3
 schedule==1.2.0
 
 # Logging
