@@ -2,20 +2,21 @@
   "name": "adobe-enterprise-automation",
   "version": "2.0.0",
   "description": "Enterprise-scale Adobe Creative Cloud automation system",
-  "main": "index.js",
+  "main": "api/server.js",
   "scripts": {
-    "test": "jest",
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
     "build": "webpack --mode production",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "monitor": "node monitoring/server.js"
+    "monitor": "node monitoring/server.js",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix"
   },
   "keywords": [
     "adobe",
@@ -25,35 +26,50 @@
     "user-management",
     "license-optimization"
   ],
-  "author": "Your Name",
+  "author": "Wesley Ellis",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "axios": "^1.4.0",
-    "jsonwebtoken": "^9.0.0",
-    "dotenv": "^16.0.3",
-    "winston": "^3.8.2",
-    "node-cron": "^3.0.2",
-    "redis": "^4.6.5",
-    "mssql": "^9.1.1",
-    "prom-client": "^14.2.0",
-    "helmet": "^7.0.0",
+    "express": "^4.19.2",
+    "axios": "^1.6.7",
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.4.1",
+    "winston": "^3.11.0",
+    "node-cron": "^3.0.3",
+    "redis": "^4.6.12",
+    "mssql": "^10.0.2",
+    "prom-client": "^15.1.0",
+    "helmet": "^7.1.0",
     "cors": "^2.8.5",
     "compression": "^1.7.4",
-    "rate-limiter-flexible": "^2.4.1"
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^9.0.1",
+    "morgan": "^1.10.0",
+    "body-parser": "^1.20.2"
   },
   "devDependencies": {
-    "jest": "^29.5.0",
-    "eslint": "^8.40.0",
-    "prettier": "^2.8.8",
-    "nodemon": "^2.0.22",
-    "webpack": "^5.82.0",
-    "webpack-cli": "^5.1.0",
-    "@types/node": "^20.1.0",
-    "supertest": "^6.3.3"
+    "jest": "^29.7.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
+    "nodemon": "^3.0.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "@types/node": "^20.11.5",
+    "supertest": "^6.3.4",
+    "@babel/core": "^7.23.7",
+    "@babel/preset-env": "^7.23.8"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
-  }
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wesellis/adobe-enterprise-automation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wesellis/adobe-enterprise-automation/issues"
+  },
+  "homepage": "https://github.com/wesellis/adobe-enterprise-automation#readme"
 }

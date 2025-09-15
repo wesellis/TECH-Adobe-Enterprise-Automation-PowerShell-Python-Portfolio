@@ -1,32 +1,55 @@
-# Core dependencies
-requests>=2.28.0
-aiohttp>=3.8.0
-pandas>=1.5.0
-pydantic>=1.10.0
+# Core dependencies - Updated for security
+requests==2.31.0
+aiohttp==3.9.3
+pandas==2.1.4
+pydantic==2.5.3
 
 # Adobe API integration
-PyJWT>=2.6.0
-cryptography>=39.0.0
+PyJWT==2.8.0
+cryptography==42.0.2
 
 # Azure integration
-azure-identity>=1.12.0
-azure-mgmt-resource>=21.0.0
-azure-storage-blob>=12.14.0
+azure-identity==1.15.0
+azure-mgmt-resource==23.0.1
+azure-storage-blob==12.19.0
+msgraph-sdk==1.2.0
+
+# Database
+pymssql==2.2.11
+sqlalchemy==2.0.25
+
+# Redis
+redis==5.0.1
+aioredis==2.0.1
 
 # Data processing
-openpyxl>=3.0.10
-python-dotenv>=0.21.0
-pyyaml>=6.0
+openpyxl==3.1.2
+python-dotenv==1.0.1
+pyyaml==6.0.1
+numpy==1.26.3
+
+# API Framework
+fastapi==0.109.0
+uvicorn==0.27.0
 
 # Monitoring
-prometheus-client>=0.15.0
+prometheus-client==0.19.0
 
 # Testing
-pytest>=7.2.0
-pytest-asyncio>=0.20.0
-pytest-cov>=4.0.0
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
 
 # Utilities
-python-dateutil>=2.8.2
-colorama>=0.4.6
-tqdm>=4.64.0
+python-dateutil==2.8.2
+colorama==0.4.6
+tqdm==4.66.1
+schedule==1.2.0
+
+# Logging
+loguru==0.7.2
+
+# Development tools
+black==23.12.1
+flake8==7.0.0
+bandit==1.7.6
