@@ -5,22 +5,30 @@ config/adobe-config.json
 config/**/secrets.json
 *.env
 .env.*
+!.env.example
 
 # API Keys and Certificates
 *.p12
 *.pem
 *.key
+*.crt
 private_key.txt
 service_account.json
+cert/
+certs/
 
 # Log files
-logs/*.log
+logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Temporary files
 temp/
 tmp/
 *.tmp
+*.temp
 
 # Windows
 Thumbs.db
@@ -56,12 +64,22 @@ MANIFEST
 .pytest_cache/
 .coverage
 htmlcov/
+.tox/
+.hypothesis/
 
 # Virtual environments
 venv/
 env/
 ENV/
 .venv/
+.env/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+.yarn-integrity
 
 # IDE files
 .vscode/
@@ -69,6 +87,10 @@ ENV/
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
+*.sublime-workspace
 
 # OS generated files
 .DS_Store
@@ -76,20 +98,53 @@ ENV/
 ._*
 .Spotlight-V100
 .Trashes
+ehthumbs.db
+Thumbs.db
 
 # Backup files
 *.bak
 *.backup
 *.old
+*.orig
 
 # Report files (may contain sensitive data)
 reports/*.html
 reports/*.pdf
 reports/*.xlsx
+reports/*.csv
+!reports/.gitkeep
 
 # Cache directories
 .cache/
 cache/
+.parcel-cache/
 
-# Node modules (if any JavaScript tooling)
-node_modules/
+# Docker
+.dockerignore
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+
+# Production builds
+dist/
+build/
+out/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Keep empty directories
+!logs/.gitkeep
+!temp/.gitkeep
+!reports/.gitkeep
+!config/.gitkeep
