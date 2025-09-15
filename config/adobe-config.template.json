@@ -1,0 +1,55 @@
+{
+  "adobe": {
+    "client_id": "${ADOBE_CLIENT_ID}",
+    "client_secret": "${ADOBE_CLIENT_SECRET}",
+    "org_id": "${ADOBE_ORG_ID}",
+    "technical_account_id": "${ADOBE_TECH_ACCOUNT_ID}",
+    "private_key_path": "${ADOBE_PRIVATE_KEY_PATH}",
+    "base_url": "https://usermanagement.adobe.io",
+    "api_version": "v2",
+    "default_country": "US"
+  },
+  "active_directory": {
+    "domain": "corp.company.com",
+    "server": "dc01.corp.company.com",
+    "ou_paths": {
+      "users": "OU=Users,DC=corp,DC=company,DC=com",
+      "groups": "OU=Groups,DC=corp,DC=company,DC=com",
+      "adobe_users": "OU=AdobeUsers,OU=Users,DC=corp,DC=company,DC=com"
+    },
+    "service_account": "${AD_SERVICE_ACCOUNT}",
+    "service_password": "${AD_SERVICE_PASSWORD}"
+  },
+  "licensing": {
+    "product_types": {
+      "CC_ALL_APPS": "Creative Cloud All Apps",
+      "CC_PHOTO_DESIGN": "Creative Cloud Photography",
+      "CC_ACROBAT_ONLY": "Acrobat Pro DC"
+    },
+    "department_mappings": {
+      "Creative": "CC_ALL_APPS",
+      "Marketing": "CC_PHOTO_DESIGN",
+      "Design": "CC_ALL_APPS",
+      "Communications": "CC_ACROBAT_ONLY",
+      "HR": "CC_ACROBAT_ONLY"
+    }
+  },
+  "processing": {
+    "max_concurrent_jobs": 20,
+    "batch_size": 100,
+    "retry_attempts": 3,
+    "timeout_seconds": 300,
+    "rate_limit_requests_per_minute": 100
+  },
+  "monitoring": {
+    "prometheus_port": 8000,
+    "health_check_interval": 30,
+    "log_level": "INFO",
+    "enable_metrics": true
+  },
+  "notifications": {
+    "teams_webhook": "${TEAMS_WEBHOOK_URL}",
+    "email_smtp_server": "${SMTP_SERVER}",
+    "email_from": "${NOTIFICATION_EMAIL}"
+  }
+}

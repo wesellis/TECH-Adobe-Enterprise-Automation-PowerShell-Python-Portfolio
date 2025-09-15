@@ -1,0 +1,95 @@
+# Adobe Enterprise Automation - Git Ignore File
+
+# Configuration files with sensitive data
+config/adobe-config.json
+config/**/secrets.json
+*.env
+.env.*
+
+# API Keys and Certificates
+*.p12
+*.pem
+*.key
+private_key.txt
+service_account.json
+
+# Log files
+logs/*.log
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# PowerShell
+*.ps1xml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Report files (may contain sensitive data)
+reports/*.html
+reports/*.pdf
+reports/*.xlsx
+
+# Cache directories
+.cache/
+cache/
+
+# Node modules (if any JavaScript tooling)
+node_modules/
