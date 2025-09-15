@@ -9,7 +9,7 @@ PyJWT==2.10.1
 cryptography==43.0.3
 
 # Azure integration
-azure-identity==1.19.0
+azure-identity==1.16.1
 azure-mgmt-resource==23.2.0
 azure-storage-blob==12.24.0
 msgraph-sdk==1.15.0
