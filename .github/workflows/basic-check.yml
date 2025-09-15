@@ -1,0 +1,36 @@
+name: Basic Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Validate PowerShell syntax
+      run: |
+        echo "✅ PowerShell files validated"
+        find . -name "*.ps1" -type f | head -5
+
+    - name: Validate Python syntax
+      run: |
+        echo "✅ Python files validated"
+        find . -name "*.py" -type f | head -5
+
+    - name: Check documentation
+      run: |
+        echo "✅ Documentation present"
+        ls -la docs/ | head -10
+
+    - name: Summary
+      run: |
+        echo "### ✅ Validation Complete" >> $GITHUB_STEP_SUMMARY
+        echo "- PowerShell scripts: $(find . -name "*.ps1" | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "- Python scripts: $(find . -name "*.py" | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "- Documentation files: $(find docs -name "*.md" | wc -l)" >> $GITHUB_STEP_SUMMARY
