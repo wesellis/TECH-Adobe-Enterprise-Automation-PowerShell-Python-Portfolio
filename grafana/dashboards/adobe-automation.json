@@ -1,0 +1,371 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "adobe-automation",
+    "title": "Adobe Enterprise Automation Dashboard",
+    "tags": ["adobe", "automation", "enterprise"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 80}
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+        "id": 1,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "adobe_active_users",
+            "refId": "A"
+          }
+        ],
+        "title": "Active Users",
+        "type": "stat"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 70},
+                {"color": "red", "value": 90}
+              ]
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+        "id": 2,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "avg(adobe_license_utilization)",
+            "refId": "A"
+          }
+        ],
+        "title": "License Utilization",
+        "type": "gauge"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null}
+              ]
+            },
+            "unit": "currencyUSD"
+          }
+        },
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+        "id": 3,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "center",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "adobe_monthly_savings",
+            "refId": "A"
+          }
+        ],
+        "title": "Monthly Savings",
+        "type": "stat"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {"type": "linear"},
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null}
+              ]
+            },
+            "unit": "ops"
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+        "id": 4,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "rate(adobe_api_calls_total[5m])",
+            "legendFormat": "API Calls",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(adobe_api_errors_total[5m])",
+            "legendFormat": "API Errors",
+            "refId": "B"
+          }
+        ],
+        "title": "API Activity",
+        "type": "timeseries"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.5},
+                {"color": "red", "value": 1}
+              ]
+            },
+            "unit": "s"
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+        "id": 5,
+        "options": {
+          "displayMode": "lcd",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "showUnfilled": true
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, adobe_api_duration_seconds_bucket)",
+            "legendFormat": "P95 Latency",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.99, adobe_api_duration_seconds_bucket)",
+            "legendFormat": "P99 Latency",
+            "refId": "B"
+          }
+        ],
+        "title": "API Response Time",
+        "type": "bargauge"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              }
+            },
+            "mappings": [],
+            "unit": "short"
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 12},
+        "id": 6,
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "right"
+          },
+          "pieType": "donut",
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "adobe_license_usage",
+            "legendFormat": "{{ product }}",
+            "refId": "A"
+          }
+        ],
+        "title": "License Distribution",
+        "type": "piechart"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "continuous-GrYlRd"},
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 12},
+        "id": 7,
+        "options": {
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "Users"
+            }
+          ]
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "topk(10, adobe_department_users)",
+            "format": "table",
+            "refId": "A"
+          }
+        ],
+        "title": "Top Departments by Users",
+        "type": "table"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "mappings": [
+              {"options": {"0": {"text": "Unhealthy"}}, "type": "value"},
+              {"options": {"1": {"text": "Healthy"}}, "type": "value"}
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 12},
+        "id": 8,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "center",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "text": {},
+          "textMode": "auto"
+        },
+        "pluginVersion": "9.5.0",
+        "targets": [
+          {
+            "expr": "up{job=\"adobe-automation\"}",
+            "legendFormat": "{{ instance }}",
+            "refId": "A"
+          }
+        ],
+        "title": "System Health",
+        "type": "stat"
+      }
+    ],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h"],
+      "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+    }
+  }
+}

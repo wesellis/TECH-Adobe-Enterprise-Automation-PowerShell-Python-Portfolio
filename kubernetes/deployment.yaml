@@ -1,0 +1,261 @@
+# Kubernetes Deployment for Adobe Automation
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: adobe-automation
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: adobe-secrets
+  namespace: adobe-automation
+type: Opaque
+stringData:
+  adobe-client-id: "YOUR_CLIENT_ID"
+  adobe-client-secret: "YOUR_CLIENT_SECRET"
+  db-password: "YOUR_DB_PASSWORD"
+  jwt-secret: "YOUR_JWT_SECRET"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adobe-config
+  namespace: adobe-automation
+data:
+  ADOBE_ORG_ID: "YOUR_ORG_ID@AdobeOrg"
+  API_PORT: "8000"
+  LOG_LEVEL: "INFO"
+  ENABLE_AUTO_PROVISIONING: "true"
+  ENABLE_LICENSE_OPTIMIZATION: "true"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adobe-api
+  namespace: adobe-automation
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: adobe-api
+  template:
+    metadata:
+      labels:
+        app: adobe-api
+    spec:
+      containers:
+      - name: api
+        image: adobe-automation/api:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ADOBE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: adobe-secrets
+              key: adobe-client-id
+        - name: ADOBE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: adobe-secrets
+              key: adobe-client-secret
+        envFrom:
+        - configMapRef:
+            name: adobe-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: powershell-worker
+  namespace: adobe-automation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: powershell-worker
+  template:
+    metadata:
+      labels:
+        app: powershell-worker
+    spec:
+      containers:
+      - name: powershell
+        image: adobe-automation/powershell:latest
+        envFrom:
+        - configMapRef:
+            name: adobe-config
+        - secretRef:
+            name: adobe-secrets
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-worker
+  namespace: adobe-automation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-worker
+  template:
+    metadata:
+      labels:
+        app: python-worker
+    spec:
+      containers:
+      - name: python
+        image: adobe-automation/python:latest
+        envFrom:
+        - configMapRef:
+            name: adobe-config
+        - secretRef:
+            name: adobe-secrets
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adobe-api-service
+  namespace: adobe-automation
+spec:
+  selector:
+    app: adobe-api
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  namespace: adobe-automation
+spec:
+  serviceName: redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis-storage
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: user-sync
+  namespace: adobe-automation
+spec:
+  schedule: "0 */4 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: sync
+            image: adobe-automation/powershell:latest
+            command: ["pwsh", "-File", "/app/scripts/user-provisioning/Sync-Users.ps1"]
+            envFrom:
+            - configMapRef:
+                name: adobe-config
+            - secretRef:
+                name: adobe-secrets
+          restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: license-optimization
+  namespace: adobe-automation
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: optimize
+            image: adobe-automation/python:latest
+            command: ["python", "/app/optimize_licenses.py"]
+            envFrom:
+            - configMapRef:
+                name: adobe-config
+            - secretRef:
+                name: adobe-secrets
+          restartPolicy: OnFailure
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: adobe-api-hpa
+  namespace: adobe-automation
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: adobe-api
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
