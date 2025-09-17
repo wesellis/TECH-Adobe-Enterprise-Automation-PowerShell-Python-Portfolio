@@ -1,15 +1,15 @@
 # Core dependencies - Latest secure versions (Dec 2024)
 requests==2.32.3
-aiohttp==3.10.11
+aiohttp==3.11.10
 pandas==2.2.3
 pydantic==2.10.3
 
 # Adobe API integration
 PyJWT==2.10.1
-cryptography==43.0.3
+cryptography==44.0.0
 
 # Azure integration
-azure-identity==1.19.0
+azure-identity==1.20.0
 azure-mgmt-resource==23.2.0
 azure-storage-blob==12.24.0
 msgraph-sdk==1.15.0
