@@ -10,7 +10,7 @@ pytest-xdist==3.5.0
 coverage==7.3.3
 
 # Code Quality
-black==23.12.1
+black==24.3.0
 flake8==6.1.0
 pylint==3.0.3
 mypy==1.7.1
