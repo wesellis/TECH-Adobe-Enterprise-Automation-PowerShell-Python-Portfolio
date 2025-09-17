@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node api/server.js",
     "dev": "nodemon api/server.js",
+    "worker:servicenow": "node workers/servicenow-worker.js",
+    "worker:pdf": "node workers/pdf-worker.js",
     "test": "jest --config config/jest.config.js --coverage",
     "test:watch": "jest --config config/jest.config.js --watch",
     "lint": "eslint . --config config/.eslintrc.json --ext .js,.jsx",
@@ -42,6 +44,7 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "mssql": "^11.0.1",
+    "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.3",
     "prom-client": "^15.1.0",
     "redis": "^4.6.12",

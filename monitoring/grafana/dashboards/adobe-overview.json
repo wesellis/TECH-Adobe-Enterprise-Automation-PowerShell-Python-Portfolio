@@ -1,0 +1,328 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "adobe-overview",
+    "title": "Adobe Automation Overview",
+    "tags": ["adobe", "overview", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+        "type": "stat",
+        "title": "Total Active Users",
+        "targets": [
+          {
+            "expr": "adobe_total_active_users",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 400 },
+                { "color": "red", "value": 500 }
+              ]
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+        "type": "stat",
+        "title": "License Utilization %",
+        "targets": [
+          {
+            "expr": "avg(adobe_license_utilization_percent)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 70 },
+                { "color": "red", "value": 90 }
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+        "type": "stat",
+        "title": "Monthly Cost",
+        "targets": [
+          {
+            "expr": "adobe_monthly_license_cost",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 35000 },
+                { "color": "red", "value": 40000 }
+              ]
+            },
+            "unit": "currencyUSD",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+        "type": "stat",
+        "title": "Inactive Users",
+        "targets": [
+          {
+            "expr": "adobe_inactive_users_count",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 50 },
+                { "color": "red", "value": 100 }
+              ]
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+        "type": "timeseries",
+        "title": "User Growth Trend",
+        "targets": [
+          {
+            "expr": "adobe_total_active_users",
+            "legendFormat": "Active Users",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(adobe_license_allocated)",
+            "legendFormat": "Total Licenses",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "showPoints": "never"
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+        "type": "piechart",
+        "title": "License Distribution by Product",
+        "targets": [
+          {
+            "expr": "adobe_license_usage_by_product",
+            "legendFormat": "{{ product }}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "pieType": "donut",
+          "displayLabels": ["name", "percent"],
+          "legendDisplayMode": "table",
+          "legendPlacement": "right"
+        }
+      },
+      {
+        "id": 7,
+        "gridPos": { "h": 8, "w": 24, "x": 0, "y": 12 },
+        "type": "graph",
+        "title": "API Performance",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "95th Percentile",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "Median",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Response Time"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+        "type": "bargauge",
+        "title": "Department License Usage",
+        "targets": [
+          {
+            "expr": "adobe_license_usage_by_department",
+            "legendFormat": "{{ department }}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient",
+          "showUnfilled": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "max": 100,
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 70 },
+                { "color": "red", "value": 90 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 9,
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+        "type": "table",
+        "title": "Top Inactive Users",
+        "targets": [
+          {
+            "expr": "topk(10, adobe_user_days_inactive)",
+            "format": "table",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "displayMode": "auto"
+            }
+          }
+        }
+      },
+      {
+        "id": 10,
+        "gridPos": { "h": 6, "w": 8, "x": 0, "y": 28 },
+        "type": "gauge",
+        "title": "Queue Processing Rate",
+        "targets": [
+          {
+            "expr": "rate(adobe_queue_items_processed_total[5m]) * 60",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "max": 100,
+            "min": 0,
+            "unit": "ops",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "red", "value": null },
+                { "color": "yellow", "value": 20 },
+                { "color": "green", "value": 50 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "gridPos": { "h": 6, "w": 8, "x": 8, "y": 28 },
+        "type": "stat",
+        "title": "Provisioning Success Rate",
+        "targets": [
+          {
+            "expr": "100 * (1 - (rate(adobe_user_provisioning_failures_total[1h]) / rate(adobe_user_provisioning_total[1h])))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "red", "value": null },
+                { "color": "yellow", "value": 90 },
+                { "color": "green", "value": 95 }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 12,
+        "gridPos": { "h": 6, "w": 8, "x": 16, "y": 28 },
+        "type": "stat",
+        "title": "Potential Monthly Savings",
+        "targets": [
+          {
+            "expr": "sum(adobe_unused_licenses_count * adobe_license_cost_per_unit)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 1000 },
+                { "color": "red", "value": 5000 }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "overwrite": true
+}

@@ -1,0 +1,180 @@
+groups:
+  - name: adobe_automation_alerts
+    interval: 30s
+    rules:
+      # API Health Alerts
+      - alert: APIDown
+        expr: up{job="adobe-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Adobe API is down"
+          description: "Adobe API has been down for more than 2 minutes"
+
+      - alert: HighAPIResponseTime
+        expr: http_request_duration_seconds{quantile="0.95"} > 2
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API response time"
+          description: "95th percentile response time is above 2 seconds for 5 minutes"
+
+      - alert: HighAPIErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API error rate"
+          description: "API error rate is above 5% for 5 minutes"
+
+      # License Utilization Alerts
+      - alert: LicenseUtilizationHigh
+        expr: adobe_license_utilization_percent > 90
+        for: 10m
+        labels:
+          severity: warning
+          component: licensing
+        annotations:
+          summary: "License utilization is high"
+          description: "License utilization for {{ $labels.product }} is above 90%"
+
+      - alert: LicenseExpiringSoon
+        expr: adobe_license_days_until_expiry < 30
+        for: 1h
+        labels:
+          severity: warning
+          component: licensing
+        annotations:
+          summary: "License expiring soon"
+          description: "License for {{ $labels.product }} expires in {{ $value }} days"
+
+      - alert: UnusedLicensesHigh
+        expr: adobe_unused_licenses_count > 50
+        for: 24h
+        labels:
+          severity: info
+          component: licensing
+        annotations:
+          summary: "High number of unused licenses"
+          description: "{{ $value }} licenses are unused for {{ $labels.product }}"
+
+      # User Activity Alerts
+      - alert: InactiveUsersHigh
+        expr: adobe_inactive_users_count > 100
+        for: 24h
+        labels:
+          severity: info
+          component: users
+        annotations:
+          summary: "High number of inactive users"
+          description: "{{ $value }} users have been inactive for more than 30 days"
+
+      - alert: UserProvisioningFailed
+        expr: rate(adobe_user_provisioning_failures_total[1h]) > 5
+        for: 10m
+        labels:
+          severity: warning
+          component: provisioning
+        annotations:
+          summary: "User provisioning failures"
+          description: "More than 5 provisioning failures in the last hour"
+
+      # System Resource Alerts
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is above 90% on {{ $labels.instance }}"
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is above 80% on {{ $labels.instance }}"
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          component: system
+        annotations:
+          summary: "Low disk space"
+          description: "Less than 10% disk space available on {{ $labels.instance }}"
+
+      # Database Alerts
+      - alert: DatabaseDown
+        expr: up{job="mssql"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "SQL Server is down"
+          description: "SQL Server has been down for more than 2 minutes"
+
+      - alert: DatabaseConnectionPoolExhausted
+        expr: adobe_db_connection_pool_available == 0
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database connection pool exhausted"
+          description: "No available database connections in the pool"
+
+      # Queue Alerts
+      - alert: ProvisioningQueueBacklog
+        expr: adobe_provisioning_queue_size > 100
+        for: 15m
+        labels:
+          severity: warning
+          component: queue
+        annotations:
+          summary: "Large provisioning queue backlog"
+          description: "Provisioning queue has {{ $value }} pending items"
+
+      - alert: QueueProcessingSlow
+        expr: rate(adobe_queue_processing_duration_seconds[5m]) > 30
+        for: 10m
+        labels:
+          severity: warning
+          component: queue
+        annotations:
+          summary: "Queue processing is slow"
+          description: "Average queue processing time is above 30 seconds"
+
+      # Cost Alerts
+      - alert: MonthlyCostExceedsBudget
+        expr: adobe_monthly_license_cost > adobe_monthly_budget
+        for: 1h
+        labels:
+          severity: warning
+          component: finance
+        annotations:
+          summary: "Monthly cost exceeds budget"
+          description: "Current monthly cost (${{ $value }}) exceeds budget"
+
+      - alert: CostIncreaseDetected
+        expr: (adobe_monthly_license_cost - adobe_monthly_license_cost offset 30d) / adobe_monthly_license_cost offset 30d > 0.1
+        for: 1h
+        labels:
+          severity: info
+          component: finance
+        annotations:
+          summary: "Significant cost increase detected"
+          description: "Monthly costs have increased by more than 10% compared to last month"

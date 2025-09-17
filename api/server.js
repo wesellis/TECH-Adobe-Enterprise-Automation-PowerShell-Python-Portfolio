@@ -142,6 +142,14 @@ const authenticateApiKey = (req, res, next) => {
 
 // ==================== ROUTES ====================
 
+// Import route modules
+const pdfRoutes = require('./routes/pdf');
+const serviceNowRoutes = require('./routes/servicenow');
+
+// Mount route modules
+app.use('/api/pdf', pdfRoutes);
+app.use('/api/servicenow', serviceNowRoutes);
+
 // Health check endpoint
 app.get('/health', async (req, res) => {
     const health = {

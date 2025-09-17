@@ -28,6 +28,7 @@ Welcome to the Adobe Enterprise Automation Suite documentation. This index provi
 | Document | Description | Target Audience |
 |----------|-------------|-----------------|
 | [**API_REFERENCE.md**](API_REFERENCE.md) | Complete REST API documentation | API Developers |
+| [**graphql-guide.md**](graphql-guide.md) | GraphQL API documentation with examples | API Developers |
 | [**POWERSHELL_GUIDE.md**](POWERSHELL_GUIDE.md) | PowerShell module development guide | PowerShell Devs |
 | [**PYTHON_GUIDE.md**](PYTHON_GUIDE.md) | Python automation development guide | Python Devs |
 | [**../CONTRIBUTING.md**](../CONTRIBUTING.md) | How to contribute to the project | Contributors |
@@ -37,6 +38,7 @@ Welcome to the Adobe Enterprise Automation Suite documentation. This index provi
 | Document | Description | Target Audience |
 |----------|-------------|-----------------|
 | [**DEPLOYMENT_GUIDE.md**](DEPLOYMENT_GUIDE.md) | Production deployment instructions | DevOps |
+| [**../infrastructure/terraform/README.md**](../infrastructure/terraform/README.md) | Terraform Azure infrastructure guide | DevOps/Cloud Eng |
 | [**MONITORING_SETUP.md**](MONITORING_SETUP.md) | Monitoring and observability setup | SRE/DevOps |
 | [**PERFORMANCE_METRICS.md**](PERFORMANCE_METRICS.md) | Performance benchmarks and optimization | Performance Eng |
 
@@ -64,6 +66,14 @@ Welcome to the Adobe Enterprise Automation Suite documentation. This index provi
 
 ### API Documentation
 - [**../api/swagger.json**](../api/swagger.json) - OpenAPI/Swagger specification
+- [**graphql-guide.md**](graphql-guide.md) - GraphQL API guide with playground
+
+### Integration Documentation
+- [**../api/jira-integration.js**](../api/jira-integration.js) - JIRA integration connector
+- [**../api/vault-integration.js**](../api/vault-integration.js) - HashiCorp Vault integration
+
+### Machine Learning
+- [**../python-automation/ml_license_predictor.py**](../python-automation/ml_license_predictor.py) - ML license prediction model
 
 ### Configuration Files
 - [**../.editorconfig**](../.editorconfig) - Editor configuration
@@ -104,14 +114,15 @@ Welcome to the Adobe Enterprise Automation Suite documentation. This index provi
 
 | Category | Document Count | Last Updated |
 |----------|---------------|--------------|
-| Getting Started | 4 | Sept 2024 |
-| Architecture | 3 | Sept 2024 |
-| Development | 4 | Sept 2024 |
-| Operations | 3 | Sept 2024 |
-| Maintenance | 2 | Sept 2024 |
-| Security | 1 | Sept 2024 |
-| Root Docs | 4 | Sept 2024 |
-| **Total** | **21 docs** | **Current** |
+| Getting Started | 4 | Sept 2025 |
+| Architecture | 3 | Sept 2025 |
+| Development | 5 | Sept 2025 |
+| Operations | 4 | Sept 2025 |
+| Maintenance | 2 | Sept 2025 |
+| Security | 1 | Sept 2025 |
+| Integrations | 3 | Sept 2025 |
+| Root Docs | 4 | Sept 2025 |
+| **Total** | **26 docs** | **Current** |
 
 ## 🔍 Quick Links
 

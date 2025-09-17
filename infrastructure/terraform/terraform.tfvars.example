@@ -1,0 +1,47 @@
+# Example Terraform variables file
+# Copy to terraform.tfvars and fill in your values
+
+project_name        = "adobe-automation"
+environment         = "prod"
+location           = "East US"
+resource_group_name = "adobe-automation-rg"
+
+# AKS Configuration
+kubernetes_version = "1.27.7"
+node_count        = 3
+min_node_count    = 2
+max_node_count    = 10
+node_size         = "Standard_D2_v3"
+
+# SQL Configuration
+sql_admin_username = "sqladmin"
+
+# Adobe API Configuration (required)
+adobe_client_id     = "YOUR_ADOBE_CLIENT_ID"
+adobe_client_secret = "YOUR_ADOBE_CLIENT_SECRET"
+adobe_org_id        = "YOUR_ADOBE_ORG_ID"
+adobe_api_key       = "YOUR_ADOBE_API_KEY"
+
+# Application Configuration
+jwt_secret = "YOUR_SECURE_JWT_SECRET_KEY"
+api_replicas = 3
+
+# Monitoring
+enable_monitoring = true
+enable_backups   = true
+backup_retention_days = 30
+
+# Network Configuration
+allowed_ip_ranges = [
+  "192.168.1.0/24",  # Office network
+  "10.0.0.0/8"       # VPN range
+]
+
+enable_private_endpoints = false
+
+# Tags
+additional_tags = {
+  Department = "IT"
+  Project    = "Adobe Automation"
+  Owner      = "admin@company.com"
+}

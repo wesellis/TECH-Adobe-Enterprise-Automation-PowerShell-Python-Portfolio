@@ -55,20 +55,30 @@ Automate common Adobe Creative Cloud administrative tasks with PowerShell and Py
 ### 📊 **License Management**
 - **Usage Tracking** - Monitor license utilization
 - **Optimization Scripts** - Identify and reclaim unused licenses
+- **Machine Learning Predictions** - Forecast future license needs with scikit-learn
 - **Reporting** - Generate usage reports
 - **Audit Logging** - Track all operations for compliance
 
 ### 🚀 **Deployment Options**
-- **Kubernetes Support** - Basic deployment manifests included
+- **Kubernetes Support** - Production-ready deployment manifests
 - **Docker Containers** - Dockerfiles for all components
-- **Infrastructure Files** - Docker Compose for easy setup
+- **Infrastructure as Code** - Complete Terraform modules for Azure deployment
 - **CI/CD Pipeline** - GitHub Actions with automated testing
 
 ### 🌐 **Enterprise REST API**
 - **Express.js Server** - High-performance Node.js API
+- **GraphQL API** - Flexible query interface with Apollo Server
 - **JWT Authentication** - Secure token-based auth
 - **Rate Limiting** - DDoS protection built-in
 - **OpenAPI Documentation** - Swagger UI for easy integration
+
+### 🔐 **Enterprise Integrations**
+- **ServiceNow Integration** - Bi-directional sync with incident management and service catalog
+- **PDF Processing** - Complete PDF manipulation with Adobe PDF Services API integration
+- **JIRA Integration** - Automated ticket creation for provisioning requests
+- **HashiCorp Vault** - Secure secrets management
+- **Active Directory Sync** - Seamless AD/Azure AD integration
+- **WebSocket Support** - Real-time updates and notifications
 
 
 ## 🚀 **Quick Start**
@@ -78,10 +88,11 @@ Automate common Adobe Creative Cloud administrative tasks with PowerShell and Py
 # Check your environment
 docker --version          # Docker 20.10+
 kubectl version           # Kubernetes 1.20+
-# Optional: terraform --version  # For infrastructure as code
+terraform --version      # Terraform 1.0+ (for Azure deployment)
 node --version           # Node.js 16+
 python --version         # Python 3.9+
 pwsh --version          # PowerShell 7+
+az --version            # Azure CLI (for cloud deployment)
 ```
 
 ### 🐳 **Docker Compose Installation (Recommended)**
@@ -181,6 +192,29 @@ const { data: licenses } = await axios.get('http://localhost:8000/api/licenses/u
   headers: { 'Authorization': `Bearer ${auth.token}` }
 });
 console.log(`Utilization: ${licenses.summary.usedLicenses}/${licenses.summary.totalLicenses}`);
+
+// PDF Processing example
+const formData = new FormData();
+formData.append('pdfs', fs.createReadStream('doc1.pdf'));
+formData.append('pdfs', fs.createReadStream('doc2.pdf'));
+
+const { data: pdfJob } = await axios.post('http://localhost:8000/api/pdf/merge', formData, {
+  headers: {
+    'Authorization': `Bearer ${auth.token}`,
+    'Content-Type': 'multipart/form-data'
+  }
+});
+console.log(`PDF merge job created: ${pdfJob.jobId}`);
+
+// ServiceNow Integration example
+await axios.post('http://localhost:8000/api/servicenow/incident', {
+  short_description: 'Adobe license request',
+  description: 'User needs Creative Cloud access',
+  urgency: '2',
+  category: 'Software'
+}, {
+  headers: { 'Authorization': `Bearer ${auth.token}` }
+});
 ```
 
 ## 🏗️ **Project Structure**
@@ -191,17 +225,20 @@ graph TB
     subgraph "Frontend Layer"
         WEB[React Dashboard]
         API[REST API Gateway]
+        GQL[GraphQL API]
     end
 
     subgraph "Processing Layer"
         PS[PowerShell Workers]
         PY[Python Async Services]
+        ML[ML Prediction Engine]
         QUEUE[Redis Queue]
     end
 
     subgraph "Data Layer"
         SQL[(SQL Server)]
         REDIS[(Redis Cache)]
+        VAULT[HashiCorp Vault]
         S3[Object Storage]
     end
 
@@ -209,28 +246,52 @@ graph TB
         ADOBE[Adobe APIs]
         AD[Active Directory]
         AZURE[Azure AD]
+        JIRA[JIRA Service Desk]
     end
 
     WEB --> API
+    WEB --> GQL
     API --> PS
     API --> PY
+    GQL --> ML
     PS --> QUEUE
     PY --> QUEUE
     QUEUE --> REDIS
     PS --> SQL
     PY --> SQL
+    ML --> SQL
     PS --> ADOBE
     PY --> ADOBE
     PS --> AD
     PY --> AZURE
+    API --> JIRA
+    API --> VAULT
 ```
 
 ### 📁 **Project Structure**
 ```
 adobe-enterprise-automation/
 ├── 📁 api/                      # Express.js REST API
+│   ├── routes/
+│   │   ├── pdf.js              # PDF processing endpoints
+│   │   └── servicenow.js       # ServiceNow integration endpoints
+│   ├── middleware/
+│   │   └── auth.js             # Authentication middleware
+│   ├── graphql-server.js       # GraphQL schema & types
+│   ├── graphql-resolvers.js    # GraphQL resolver implementations
+│   ├── graphql-integration.js  # GraphQL middleware
+│   ├── jira-integration.js     # JIRA connector
+│   └── vault-integration.js    # HashiCorp Vault client
 ├── 📁 creative-cloud/           # Core PowerShell automation
 ├── 📁 python-automation/        # Python async services
+│   └── ml_license_predictor.py # ML prediction model
+├── 📁 pdf-processing/           # PDF processing system
+│   ├── pdf_processor.py        # Python PDF processor
+│   └── requirements.txt        # PDF dependencies
+├── 📁 workers/                  # Background processing services
+│   └── servicenow-worker.js    # ServiceNow integration worker
+├── 📁 database/                 # Database schemas and migrations
+│   └── servicenow-integration.sql # ServiceNow tables
 ├── 📁 scripts/                  # Utility automation scripts
 ├── 📁 modules/                  # PowerShell modules
 ├── 📁 tests/                    # Test suites
@@ -240,10 +301,15 @@ adobe-enterprise-automation/
 │   └── 03-advanced/            # Enterprise solutions
 ├── 📁 infrastructure/           # Deployment & infrastructure
 │   ├── kubernetes/             # K8s manifests
-│   ├── terraform/              # Infrastructure as Code
+│   ├── terraform/              # Azure Infrastructure as Code
+│   │   ├── main.tf            # Core infrastructure
+│   │   ├── aks.tf             # Azure Kubernetes Service
+│   │   ├── monitoring.tf       # Monitoring setup
+│   │   └── security.tf        # Security configurations
 │   ├── docker-compose.yml      # Stack orchestration
 │   └── dashboard/              # Web UI
 ├── 📁 docs/                     # Complete documentation
+│   └── graphql-guide.md       # GraphQL API guide
 ├── 📁 config/                   # Configuration files
 ├── 📁 logs/                     # Application logs
 ├── 📁 reports/                  # Generated reports
@@ -282,9 +348,11 @@ Access all 21+ comprehensive documentation guides organized by category.
 
 ### 🔧 Technical Documentation
 - 🌐 [**API Reference**](docs/API_REFERENCE.md) - REST API endpoints and examples
+- 📊 [**GraphQL Guide**](docs/graphql-guide.md) - GraphQL API documentation
 - 📄 [**OpenAPI/Swagger**](api/swagger.json) - Complete API specification
 - 🛡️ [**Security Guidelines**](docs/SECURITY.md) - Security best practices and compliance
 - 📡 [**Monitoring Setup**](docs/MONITORING_SETUP.md) - Monitoring configuration guides
+- 🏗️ [**Infrastructure Guide**](infrastructure/terraform/README.md) - Terraform deployment
 
 ### 📖 Operations & Support
 - 🔍 [**Troubleshooting Guide**](docs/TROUBLESHOOTING.md) - Common issues and solutions
@@ -298,15 +366,19 @@ Access all 21+ comprehensive documentation guides organized by category.
 | Component | Technology | Purpose |
 |-----------|------------|---------|
 | **Backend API** | Node.js + Express | REST API server |
+| **GraphQL** | Apollo Server | Flexible query API |
 | **Automation** | PowerShell 7 | Windows automation |
 | **Processing** | Python 3.11 + AsyncIO | Async data processing |
+| **Machine Learning** | scikit-learn | License prediction |
 | **Database** | SQL Server 2019 | Primary data store |
 | **Cache** | Redis 7 | Session & queue management |
 | **Container** | Docker + Kubernetes | Orchestration |
+| **Cloud Platform** | Microsoft Azure | Cloud infrastructure |
 | **Monitoring** | Prometheus + Grafana | Metrics & dashboards |
 | **CI/CD** | GitHub Actions | Automated testing & deployment |
-| **IaC** | Terraform | Infrastructure provisioning |
+| **IaC** | Terraform | Azure infrastructure provisioning |
 | **Security** | HashiCorp Vault | Secrets management |
+| **Service Desk** | Atlassian JIRA | Ticket management |
 
 ## 🔒 **Security & Compliance**
 
@@ -328,14 +400,36 @@ Access all 21+ comprehensive documentation guides organized by category.
 
 ## 🚀 **Advanced Features**
 
-### 🔮 Roadmap & Future Features
-- **Machine Learning** - License usage predictions (planned)
-- **Enhanced Integrations** - ServiceNow, Slack, Teams (planned)
-- **React Dashboard** - Convert HTML to React components (planned)
+### ✅ **Recently Implemented**
+- **PDF Processing System** - Complete PDF manipulation with 15+ operations (merge, split, OCR, compress, watermark, encrypt)
+- **ServiceNow Integration** - Full bi-directional sync with incident management and service catalog requests
+- **Machine Learning** - License usage predictions with RandomForest model
+- **GraphQL API** - Flexible query interface with subscriptions
+- **JIRA Integration** - Automated ticket creation and tracking
+- **HashiCorp Vault** - Enterprise secrets management
+- **Terraform IaC** - Complete Azure infrastructure automation
+
+### 🔮 **Roadmap & Future Features**
+- **Enhanced Integrations** - Slack, Teams integration (planned)
 - **Advanced Analytics** - Deeper insights and forecasting (planned)
+- **Multi-Cloud Support** - AWS and GCP deployments (planned)
+- **Mobile App** - iOS/Android companion app (planned)
 
 ## 🎯 **Use Cases**
 
+### 📄 **PDF Processing**
+- 🔄 **Document Workflows** - Merge, split, compress PDFs automatically
+- 🔍 **OCR Processing** - Extract text from scanned documents
+- 🔒 **Security Operations** - Encrypt, watermark, and protect documents
+- 📊 **Batch Processing** - Handle multiple PDFs with queue management
+
+### 🎫 **ServiceNow Integration**
+- 📋 **Incident Management** - Create and track Adobe-related incidents
+- 🔄 **Automated Provisioning** - Process service catalog requests automatically
+- 👥 **User Synchronization** - Bi-directional sync between systems
+- 📈 **Workflow Automation** - Streamline approval processes
+
+### 🔧 **Traditional Use Cases**
 - 📥 **Bulk User Import** - Process CSV files with user data
 - 🔄 **License Recycling** - Reclaim unused licenses automatically
 - 📊 **Usage Reports** - Generate monthly utilization reports
