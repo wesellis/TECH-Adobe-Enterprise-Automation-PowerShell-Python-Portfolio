@@ -1,5 +1,5 @@
 # Core dependencies - Latest secure versions (Dec 2024)
-requests==2.32.3
+requests==2.32.4
 aiohttp==3.11.10
 pandas==2.2.3
 pydantic==2.10.3
