@@ -26,7 +26,7 @@ sphinx-autodoc-typehints==1.25.2
 ipython==8.18.1
 ipdb==0.13.13
 jupyter==1.0.0
-notebook==7.0.6
+notebook==7.2.2
 
 # Security
 bandit==1.7.6
