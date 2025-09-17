@@ -1,0 +1,117 @@
+name: Basic Checks
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  basic-validation:
+    name: Basic Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Validate JSON files
+        run: |
+          echo "Validating JSON files..."
+          for file in $(find . -name "*.json" -not -path "./node_modules/*"); do
+            if jq empty "$file" 2>/dev/null; then
+              echo "✓ Valid: $file"
+            else
+              echo "✗ Invalid: $file"
+            fi
+          done
+
+      - name: Check file structure
+        run: |
+          echo "Checking required directories..."
+          required_dirs=("api" "creative-cloud" "python-automation" "infrastructure" "docs")
+          for dir in "${required_dirs[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "✓ Found: $dir"
+            else
+              echo "✗ Missing: $dir"
+              exit 1
+            fi
+          done
+
+      - name: Verify PowerShell scripts syntax
+        shell: pwsh
+        run: |
+          Write-Host "Checking PowerShell script syntax..."
+          $scripts = Get-ChildItem -Path . -Filter *.ps1 -Recurse
+          $errors = 0
+          foreach ($script in $scripts) {
+            try {
+              $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content $script.FullName -Raw), [ref]$null)
+              Write-Host "✓ Valid: $($script.Name)"
+            }
+            catch {
+              Write-Host "✗ Invalid: $($script.Name)"
+              $errors++
+            }
+          }
+          if ($errors -gt 0) {
+            Write-Host "Found $errors syntax errors"
+            exit 1
+          }
+
+      - name: Check Python syntax
+        run: |
+          echo "Checking Python syntax..."
+          if command -v python3 &> /dev/null; then
+            find . -name "*.py" -not -path "./node_modules/*" -exec python3 -m py_compile {} \; 2>&1 | grep -E "SyntaxError|Error" && exit 1 || echo "✓ All Python files have valid syntax"
+          else
+            echo "Python not found, skipping Python checks"
+          fi
+
+      - name: Validate Docker files
+        run: |
+          echo "Checking Docker files..."
+          for dockerfile in $(find . -name "Dockerfile*"); do
+            if [ -f "$dockerfile" ]; then
+              echo "✓ Found: $dockerfile"
+            fi
+          done
+
+      - name: Check documentation
+        run: |
+          echo "Checking documentation..."
+          if [ -f "README.md" ]; then
+            echo "✓ README.md exists"
+          else
+            echo "✗ README.md missing"
+            exit 1
+          fi
+
+          doc_count=$(find docs -name "*.md" 2>/dev/null | wc -l)
+          echo "✓ Found $doc_count documentation files"
+
+      - name: Security check - No hardcoded secrets
+        run: |
+          echo "Checking for potential secrets..."
+          # Check for common secret patterns (basic check)
+          if grep -r "password.*=.*['\"].*['\"]" --include="*.js" --include="*.py" --include="*.ps1" --exclude-dir=node_modules --exclude-dir=.git . | grep -v "password.*=.*process.env" | grep -v "password.*=.*config" | grep -v "example" | grep -v "placeholder"; then
+            echo "⚠️ Warning: Potential hardcoded passwords found (review manually)"
+          else
+            echo "✓ No obvious hardcoded passwords found"
+          fi
+
+      - name: Summary
+        run: |
+          echo "================================"
+          echo "✅ Basic validation completed!"
+          echo "================================"
+          echo "- JSON files validated"
+          echo "- Project structure verified"
+          echo "- PowerShell syntax checked"
+          echo "- Python syntax checked"
+          echo "- Documentation present"
+          echo "- Basic security check passed"

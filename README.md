@@ -35,8 +35,8 @@ Automate common Adobe Creative Cloud administrative tasks with PowerShell and Py
 
 ```diff
 + 🚀 Faster user provisioning through automation scripts
-+ 💰 Potential cost savings through better license tracking
-+ 📈 Improved visibility into license usage
++ 📊 Better visibility and tracking of license usage
++ 📈 Improved license utilization insights
 + 🔒 Secure REST API with JWT authentication
 + 📊 License usage reporting capabilities
 + 🔧 Working PowerShell and Python automation scripts
@@ -324,12 +324,12 @@ adobe-enterprise-automation/
 |------|---------|-------------|
 | **User Provisioning** | Faster processing | Automation scripts reduce manual work |
 | **License Tracking** | Better visibility | Scripts provide usage reports |
-| **Time Savings** | Fewer manual tasks | Bulk operations save time |
+| **Efficiency** | Fewer manual tasks | Bulk operations streamline workflows |
 | **Error Reduction** | More consistent | Automation reduces human errors |
 | **Reporting** | Regular insights | Automated report generation |
 
-### 💡 **Value Proposition**
-- **Time Savings**: Automate repetitive Adobe admin tasks
+### 💡 **Key Benefits**
+- **Automation**: Streamline repetitive Adobe admin tasks
 - **Better Tracking**: Know exactly who's using what licenses
 - **Bulk Operations**: Handle multiple users at once
 - **API Integration**: Connect Adobe with your existing systems

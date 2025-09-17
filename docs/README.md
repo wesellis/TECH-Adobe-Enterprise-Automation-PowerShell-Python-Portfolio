@@ -12,7 +12,7 @@ Welcome to the Adobe Enterprise Automation Suite documentation. This index provi
 |----------|-------------|-----------------|
 | [**QUICK_START.md**](QUICK_START.md) | Quick setup guide to get running in minutes | New Users |
 | [**PROJECT_OVERVIEW.md**](PROJECT_OVERVIEW.md) | High-level project introduction and goals | Everyone |
-| [**VALUE_PROPOSITION.md**](VALUE_PROPOSITION.md) | Business value and ROI analysis | Management |
+| [**VALUE_PROPOSITION.md**](VALUE_PROPOSITION.md) | Project benefits and impact analysis | Management |
 | [**LEARNING_PATH.md**](LEARNING_PATH.md) | Progressive learning from basic to advanced | Developers |
 
 ## 🏗️ Architecture & Design
