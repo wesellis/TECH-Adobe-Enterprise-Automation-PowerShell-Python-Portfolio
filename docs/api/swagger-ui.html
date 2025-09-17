@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adobe Enterprise Automation API Documentation</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .topbar {
+            background-color: #DA1F26;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .topbar h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .topbar .version {
+            margin-left: 20px;
+            padding: 4px 12px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        #swagger-ui {
+            margin-top: 20px;
+        }
+        .swagger-ui .topbar {
+            display: none;
+        }
+        .info {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #DA1F26;
+            margin: 20px;
+            border-radius: 4px;
+        }
+        .info h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .info p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .environment-selector {
+            margin: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .environment-selector label {
+            margin-right: 10px;
+            font-weight: 600;
+        }
+        .environment-selector select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .api-key-input {
+            margin: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .api-key-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .api-key-input input {
+            width: 300px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .api-key-input button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #DA1F26;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .api-key-input button:hover {
+            background-color: #b71c22;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h1>Adobe Enterprise Automation API</h1>
+        <span class="version">v2.0.0</span>
+    </div>
+
+    <div class="info">
+        <h2>API Documentation</h2>
+        <p>
+            This is the interactive API documentation for the Adobe Enterprise Automation system.
+            Use this interface to explore available endpoints, understand request/response schemas,
+            and test API calls directly from your browser.
+        </p>
+        <p>
+            <strong>Authentication:</strong> Most endpoints require JWT authentication. Use the login endpoint
+            to obtain a token, then click "Authorize" and enter your token in the Bearer Auth field.
+        </p>
+    </div>
+
+    <div class="environment-selector">
+        <label for="server-select">Environment:</label>
+        <select id="server-select" onchange="changeServer(this.value)">
+            <option value="http://localhost:8000">Development (localhost:8000)</option>
+            <option value="https://staging-api.adobe-automation.company.com">Staging</option>
+            <option value="https://api.adobe-automation.company.com">Production</option>
+        </select>
+    </div>
+
+    <div class="api-key-input">
+        <label for="api-key">API Key (for testing webhook endpoints):</label>
+        <input type="password" id="api-key" placeholder="Enter your API key">
+        <button onclick="setApiKey()">Set API Key</button>
+    </div>
+
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js"></script>
+    <script>
+        let ui;
+
+        window.onload = function() {
+            // Initialize Swagger UI
+            ui = SwaggerUIBundle({
+                url: "./openapi.yaml",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                defaultModelsExpandDepth: 1,
+                defaultModelExpandDepth: 1,
+                docExpansion: "list",
+                filter: true,
+                showExtensions: true,
+                showCommonExtensions: true,
+                tryItOutEnabled: true,
+                supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+                validatorUrl: null,
+                onComplete: function() {
+                    console.log("Swagger UI loaded successfully");
+                },
+                requestInterceptor: function(request) {
+                    // Add custom headers if needed
+                    const apiKey = localStorage.getItem('apiKey');
+                    if (apiKey && request.url.includes('/webhooks/')) {
+                        request.headers['X-API-Key'] = apiKey;
+                    }
+                    return request;
+                },
+                responseInterceptor: function(response) {
+                    // Log responses for debugging
+                    console.log('API Response:', response);
+                    return response;
+                }
+            });
+
+            window.ui = ui;
+
+            // Load saved server preference
+            const savedServer = localStorage.getItem('selectedServer');
+            if (savedServer) {
+                document.getElementById('server-select').value = savedServer;
+                changeServer(savedServer);
+            }
+
+            // Load saved API key
+            const savedApiKey = localStorage.getItem('apiKey');
+            if (savedApiKey) {
+                document.getElementById('api-key').value = savedApiKey;
+            }
+        }
+
+        function changeServer(serverUrl) {
+            // Update the server in Swagger UI
+            if (ui) {
+                ui.preauthorizeApiKey('ApiKeyAuth', localStorage.getItem('apiKey') || '');
+
+                // Update server
+                const servers = [{
+                    url: serverUrl,
+                    description: getServerDescription(serverUrl)
+                }];
+
+                ui.specActions.updateJsonSpec({
+                    servers: servers
+                });
+            }
+
+            // Save server preference
+            localStorage.setItem('selectedServer', serverUrl);
+        }
+
+        function getServerDescription(url) {
+            if (url.includes('localhost')) {
+                return 'Development server';
+            } else if (url.includes('staging')) {
+                return 'Staging server';
+            } else {
+                return 'Production server';
+            }
+        }
+
+        function setApiKey() {
+            const apiKey = document.getElementById('api-key').value;
+            if (apiKey) {
+                localStorage.setItem('apiKey', apiKey);
+                if (ui) {
+                    ui.preauthorizeApiKey('ApiKeyAuth', apiKey);
+                }
+                alert('API Key set successfully!');
+            }
+        }
+
+        // Add keyboard shortcut for quick search
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                const filterInput = document.querySelector('.filter-container input');
+                if (filterInput) {
+                    filterInput.focus();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

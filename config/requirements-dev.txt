@@ -1,0 +1,57 @@
+# Development dependencies for Python
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+pytest-timeout==2.2.0
+pytest-xdist==3.5.0
+coverage==7.3.3
+
+# Code Quality
+black==23.12.1
+flake8==6.1.0
+pylint==3.0.3
+mypy==1.7.1
+isort==5.13.2
+autopep8==2.0.4
+
+# Documentation
+sphinx==7.2.6
+sphinx-rtd-theme==2.0.0
+sphinx-autodoc-typehints==1.25.2
+
+# Development Tools
+ipython==8.18.1
+ipdb==0.13.13
+jupyter==1.0.0
+notebook==7.0.6
+
+# Security
+bandit==1.7.6
+safety==3.0.1
+
+# Performance
+memory-profiler==0.61.0
+line-profiler==4.1.2
+py-spy==0.3.14
+
+# Mocking
+responses==0.24.1
+faker==21.0.0
+factory-boy==3.3.0
+
+# Type Checking
+types-requests==2.31.0.10
+types-redis==4.6.0.11
+types-PyYAML==6.0.12.12
+
+# Pre-commit hooks
+pre-commit==3.6.0
+
+# Build tools
+build==1.0.3
+twine==4.0.2
+wheel==0.42.0
+setuptools==69.0.3

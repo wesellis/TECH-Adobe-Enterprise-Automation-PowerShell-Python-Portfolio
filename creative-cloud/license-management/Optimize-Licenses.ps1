@@ -38,6 +38,26 @@ function Write-Log {
     }
 }
 
+function Get-AdobeAccessToken {
+    param($Config)
+
+    $body = @{
+        client_id = $Config.adobe.client_id
+        client_secret = $Config.adobe.client_secret
+        jwt_token = "jwt_placeholder" # In production, generate proper JWT
+    }
+
+    try {
+        $response = Invoke-RestMethod -Uri "https://ims-na1.adobelogin.com/ims/exchange/jwt" `
+            -Method Post -Body $body
+        return $response.access_token
+    }
+    catch {
+        Write-Log "Failed to authenticate with Adobe API: $_" "ERROR"
+        throw
+    }
+}
+
 function Get-InactiveUsers {
     param(
         [int]$Days,
@@ -249,8 +269,12 @@ function Main {
         return
     }
 
-    # Get access token (simplified for demo)
-    $token = if ($TestMode) { "test_token" } else { "actual_token_here" }
+    # Get access token
+    $token = if ($TestMode) {
+        "test_token"
+    } else {
+        Get-AdobeAccessToken -Config $config
+    }
 
     # Get inactive users
     $inactiveUsers = Get-InactiveUsers -Days $InactiveDays -Token $token -Config $config

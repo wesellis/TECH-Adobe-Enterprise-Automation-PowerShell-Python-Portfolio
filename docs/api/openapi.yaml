@@ -1,0 +1,597 @@
+openapi: 3.0.3
+info:
+  title: Adobe Enterprise Automation API
+  description: |
+    REST API for Adobe Creative Cloud enterprise automation, providing endpoints for user provisioning,
+    license management, reporting, and integration with enterprise systems.
+  version: 2.0.0
+  contact:
+    name: Enterprise IT Team
+    email: adobe-automation@company.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.adobe-automation.company.com
+    description: Production server
+  - url: https://staging-api.adobe-automation.company.com
+    description: Staging server
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+tags:
+  - name: Authentication
+    description: Authentication endpoints
+  - name: Users
+    description: User management operations
+  - name: Licenses
+    description: License management and optimization
+  - name: Reports
+    description: Reporting and analytics
+  - name: Jobs
+    description: Asynchronous job management
+  - name: Health
+    description: Health and monitoring endpoints
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: Returns the health status of the API and its dependencies
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: Service is unhealthy or degraded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  /metrics:
+    get:
+      tags:
+        - Health
+      summary: Prometheus metrics endpoint
+      description: Returns metrics in Prometheus format
+      security: []
+      responses:
+        '200':
+          description: Metrics retrieved successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticates a user and returns a JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users:
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      description: Provisions a new Adobe Creative Cloud user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '202':
+          description: User queued for provisioning
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProvisioningResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/{email}:
+    get:
+      tags:
+        - Users
+      summary: Get user by email
+      description: Retrieves user information including licenses
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+          description: User email address
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/bulk:
+    post:
+      tags:
+        - Users
+      summary: Bulk user upload
+      description: Process multiple users in a single request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUsersRequest'
+      responses:
+        '202':
+          description: Bulk processing initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/licenses/optimize:
+    post:
+      tags:
+        - Licenses
+      summary: Optimize license allocation
+      description: Triggers license optimization process
+      responses:
+        '200':
+          description: Optimization completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizationResult'
+        '500':
+          description: Optimization failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/licenses/utilization:
+    get:
+      tags:
+        - Licenses
+      summary: Get license utilization
+      description: Returns current license utilization metrics
+      responses:
+        '200':
+          description: Utilization data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseUtilization'
+
+  /api/reports/inactive-users:
+    get:
+      tags:
+        - Reports
+      summary: Get inactive users report
+      description: Returns list of inactive users for license reclamation
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 90
+          description: Days of inactivity threshold
+      responses:
+        '200':
+          description: Report generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InactiveUsersReport'
+
+  /api/jobs/{jobId}:
+    get:
+      tags:
+        - Jobs
+      summary: Get job status
+      description: Returns the status of an asynchronous job
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Job identifier
+      responses:
+        '200':
+          description: Job status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatus'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/webhooks/provision:
+    post:
+      tags:
+        - Users
+      summary: Webhook for user provisioning
+      description: Endpoint for external systems to trigger user provisioning
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent'
+      responses:
+        '200':
+          description: Webhook received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received:
+                    type: boolean
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from login endpoint
+
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for external service authentication
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+        message:
+          type: string
+          description: Detailed error message (development mode only)
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+
+    HealthStatus:
+      type: object
+      required:
+        - status
+        - timestamp
+        - uptime
+        - checks
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        timestamp:
+          type: string
+          format: date-time
+        uptime:
+          type: number
+          description: Uptime in seconds
+        checks:
+          type: object
+          properties:
+            redis:
+              type: string
+              enum: [healthy, unhealthy]
+            database:
+              type: string
+              enum: [healthy, unhealthy]
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          format: email
+          description: User email address
+        password:
+          type: string
+          format: password
+          minLength: 8
+
+    LoginResponse:
+      type: object
+      required:
+        - token
+        - expiresIn
+        - user
+      properties:
+        token:
+          type: string
+          description: JWT authentication token
+        expiresIn:
+          type: integer
+          description: Token expiry time in seconds
+        user:
+          type: object
+          properties:
+            username:
+              type: string
+            role:
+              type: string
+
+    CreateUserRequest:
+      type: object
+      required:
+        - email
+        - firstName
+        - lastName
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+        products:
+          type: array
+          items:
+            type: string
+            enum: [Creative Cloud, Photoshop, Illustrator, InDesign, Premiere Pro, After Effects, Lightroom, XD, Animate, Dreamweaver, Acrobat Pro]
+        department:
+          type: string
+
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        department:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, suspended]
+        createdAt:
+          type: string
+          format: date-time
+        lastLogin:
+          type: string
+          format: date-time
+        licenses:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+              assignedDate:
+                type: string
+                format: date-time
+              lastUsed:
+                type: string
+                format: date-time
+
+    UserProvisioningResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        email:
+          type: string
+        queuePosition:
+          type: integer
+
+    BulkUsersRequest:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/CreateUserRequest'
+
+    BulkJobResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+        message:
+          type: string
+        statusUrl:
+          type: string
+
+    OptimizationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        results:
+          type: string
+
+    LicenseUtilization:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productName:
+                type: string
+              totalLicenses:
+                type: integer
+              usedLicenses:
+                type: integer
+              availableLicenses:
+                type: integer
+              utilizationPercent:
+                type: number
+              costPerLicense:
+                type: number
+        summary:
+          type: object
+          properties:
+            totalLicenses:
+              type: integer
+            usedLicenses:
+              type: integer
+            monthlySpend:
+              type: number
+            potentialSavings:
+              type: number
+
+    InactiveUsersReport:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+              lastActive:
+                type: string
+                format: date-time
+              daysInactive:
+                type: integer
+              activeLicenses:
+                type: integer
+              monthlyCost:
+                type: number
+        summary:
+          type: object
+          properties:
+            totalInactive:
+              type: integer
+            licensesReclaimable:
+              type: integer
+            potentialSavings:
+              type: number
+
+    JobStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [processing, completed, failed]
+        total:
+          type: integer
+        processed:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+              error:
+                type: string
+
+    WebhookEvent:
+      type: object
+      required:
+        - event
+        - data
+      properties:
+        event:
+          type: string
+          enum: [user.created, user.deleted, user.updated]
+        data:
+          type: object
+          description: Event-specific data payload

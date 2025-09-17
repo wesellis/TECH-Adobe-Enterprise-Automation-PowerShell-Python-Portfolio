@@ -182,6 +182,11 @@ app.get('/metrics', (req, res) => {
     });
 });
 
+// API Documentation endpoint
+app.get('/api/docs', (req, res) => {
+    res.redirect('/docs/api/swagger-ui.html');
+});
+
 // Authentication endpoint
 app.post('/api/auth/login',
     body('username').isEmail(),

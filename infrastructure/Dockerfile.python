@@ -1,29 +1,51 @@
-# Python Automation Container
-FROM python:3.11-slim
+# Multi-stage build for optimized Python container
+# Stage 1: Build dependencies
+FROM python:3.11-slim AS builder
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
-    git \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# Copy requirements
+# Copy and install Python dependencies
 COPY requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Stage 2: Runtime image
+FROM python:3.11-slim
+
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 1000 appuser
+
+# Copy Python packages from builder
+COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
+
+# Set working directory
+WORKDIR /app
 
 # Copy application code
-COPY python-automation/ ./
-COPY config/ ./config/
+COPY --chown=appuser:appuser python-automation/ ./
+COPY --chown=appuser:appuser config/ ./config/
 
-# Create logs directory
-RUN mkdir -p /app/logs
+# Create logs directory with proper permissions
+RUN mkdir -p /app/logs && chown -R appuser:appuser /app/logs
+
+# Update PATH for user-installed packages
+ENV PATH=/home/appuser/.local/bin:$PATH
+
+# Switch to non-root user
+USER appuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)" || exit 1
 
 # Run Python automation
 CMD ["python", "-u", "main.py"]

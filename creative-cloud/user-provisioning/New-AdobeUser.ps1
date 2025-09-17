@@ -10,24 +10,88 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$false)]
+    [ValidatePattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')]
     [string]$Email,
 
     [Parameter(Mandatory=$false)]
+    [ValidateSet("Creative Cloud", "Photoshop", "Illustrator", "InDesign", "Premiere Pro",
+                 "After Effects", "Lightroom", "XD", "Animate", "Dreamweaver", "Acrobat Pro")]
     [string[]]$Products = @("Creative Cloud"),
 
     [Parameter(Mandatory=$false)]
+    [ValidateScript({
+        if(-Not (Test-Path $_)) {
+            throw "Config file does not exist: $_"
+        }
+        if(-Not (Test-Path $_ -PathType Leaf)) {
+            throw "ConfigPath must be a file, not a directory: $_"
+        }
+        return $true
+    })]
     [string]$ConfigPath = "..\..\config\adobe-config.json",
 
     [switch]$BulkMode,
     [switch]$TestMode
 )
 
+# Input sanitization functions
+function Test-SafeString {
+    param(
+        [string]$Input,
+        [string]$FieldName
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Input)) {
+        throw "$FieldName cannot be empty"
+    }
+
+    # Check for SQL injection patterns
+    $sqlPatterns = @('--', ';', '/*', '*/', 'xp_', 'sp_', 'exec', 'drop', 'alter', 'insert', 'delete', 'update')
+    foreach ($pattern in $sqlPatterns) {
+        if ($Input -match [regex]::Escape($pattern)) {
+            throw "$FieldName contains potentially dangerous characters"
+        }
+    }
+
+    # Check for script injection
+    if ($Input -match '<script|javascript:|onerror=|onclick=') {
+        throw "$FieldName contains potentially dangerous script content"
+    }
+
+    return $true
+}
+
+function Get-SanitizedName {
+    param([string]$Name)
+
+    # Remove special characters except letters, numbers, spaces, and hyphens
+    $sanitized = $Name -replace '[^a-zA-Z0-9\s\-]', ''
+
+    # Trim and limit length
+    $sanitized = $sanitized.Trim()
+    if ($sanitized.Length -gt 50) {
+        $sanitized = $sanitized.Substring(0, 50)
+    }
+
+    return $sanitized
+}
+
 # Load configuration
 function Get-AdobeConfig {
     param([string]$Path)
 
     if (Test-Path $Path) {
-        return Get-Content $Path | ConvertFrom-Json
+        $config = Get-Content $Path | ConvertFrom-Json
+
+        # Validate config structure
+        if (-not $config.adobe) {
+            throw "Invalid config: missing 'adobe' section"
+        }
+        if (-not $config.adobe.client_id -or -not $config.adobe.client_secret) {
+            throw "Invalid config: missing Adobe credentials"
+        }
+
+        return $config
     } else {
         Write-Error "Configuration file not found: $Path"
         exit 1
@@ -70,6 +134,11 @@ function New-AdobeUserAPI {
         [string]$Token,
         $Config
     )
+
+    # Validate and sanitize inputs
+    Test-SafeString -Input $Email -FieldName "Email"
+    $FirstName = Get-SanitizedName -Name $FirstName
+    $LastName = Get-SanitizedName -Name $LastName
 
     if ($TestMode) {
         Write-Host "TEST MODE: Would create user $Email with products: $($Products -join ', ')" -ForegroundColor Yellow
