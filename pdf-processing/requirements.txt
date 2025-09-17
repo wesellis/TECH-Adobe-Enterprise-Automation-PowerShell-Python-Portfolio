@@ -1,5 +1,5 @@
 # PDF Processing Dependencies
-pypdf==5.1.0
+pypdf==6.0.0
 pymupdf==1.24.0
 pdf2image==1.17.0
 pytesseract==0.3.13
