@@ -209,7 +209,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push API image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./infrastructure/Dockerfile.api
@@ -221,7 +221,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build and push Python image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./infrastructure/Dockerfile.python
@@ -233,7 +233,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build and push PowerShell image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./infrastructure/Dockerfile.powershell
