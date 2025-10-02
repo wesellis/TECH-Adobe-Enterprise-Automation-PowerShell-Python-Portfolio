@@ -2,10 +2,12 @@
 
 Automation toolkit for Adobe Creative Cloud administration using PowerShell, Python, and Node.js.
 
-![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=flat-square&logo=powershell&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=flat-square&logo=powershell&logoColor=white)](#)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/wesellis/TECH-Adobe-Enterprise-Automation-PowerShell-Python-Portfolio?style=flat-square)](https://github.com/wesellis/TECH-Adobe-Enterprise-Automation-PowerShell-Python-Portfolio/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/wesellis/TECH-Adobe-Enterprise-Automation-PowerShell-Python-Portfolio?style=flat-square)](https://github.com/wesellis/TECH-Adobe-Enterprise-Automation-PowerShell-Python-Portfolio/commits)
 
 ## Overview
 
