@@ -12,7 +12,7 @@ numpy==1.25.2
 openpyxl==3.1.2
 
 # Enterprise security and encryption
-cryptography==44.0.0
+cryptography==44.0.1
 pyjwt[crypto]==2.8.0
 azure-keyvault-secrets==4.7.0
 azure-identity==1.20.0
