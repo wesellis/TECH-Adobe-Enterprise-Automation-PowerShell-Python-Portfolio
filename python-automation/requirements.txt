@@ -2,7 +2,7 @@
 # Install with: pip install -r requirements.txt
 
 # Core async and HTTP libraries
-aiohttp==3.11.10
+aiohttp==3.12.14
 aiofiles==23.2.1
 asyncio-throttle==1.0.2
 
@@ -27,8 +27,8 @@ psutil==5.9.6
 
 # API and data validation
 pydantic==2.5.2
-requests==2.32.3
-urllib3==2.1.0
+requests==2.32.4
+urllib3==2.5.0
 
 # Logging and configuration
 pyyaml==6.0.1

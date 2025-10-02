@@ -54,4 +54,4 @@ pre-commit==3.6.0
 build==1.0.3
 twine==4.0.2
 wheel==0.42.0
-setuptools==75.6.0
+setuptools==78.1.1
