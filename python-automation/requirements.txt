@@ -27,7 +27,7 @@ psutil==5.9.6
 
 # API and data validation
 pydantic==2.5.2
-requests==2.32.4
+requests==2.32.5
 urllib3==2.5.0
 
 # Logging and configuration
