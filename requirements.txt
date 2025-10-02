@@ -6,7 +6,7 @@ pydantic==2.10.3
 
 # Adobe API integration
 PyJWT==2.10.1
-cryptography==44.0.1
+cryptography==46.0.2
 
 # Azure integration
 azure-identity==1.20.0
