@@ -15,7 +15,7 @@ openpyxl==3.1.2
 cryptography==48.0.1
 pyjwt[crypto]==2.13.0
 azure-keyvault-secrets==4.7.0
-azure-identity==1.20.0
+azure-identity==1.25.1
 
 # Monitoring and metrics
 prometheus-client==0.19.0
